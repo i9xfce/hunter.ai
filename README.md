@@ -34,6 +34,17 @@ docker compose up --build
 Backend health check: <http://localhost:8000/health>
 Frontend dashboard: <http://localhost:3000>
 
+
+## Free deployment
+
+The default deployment path is GitHub Pages for the static frontend and Render for the FastAPI backend/PostgreSQL MVP. GitHub Pages is selected first because it is free, supports HTTPS, and the workflow detects the repository name automatically instead of depending on a specific GitHub username.
+
+```bash
+PROJECT_NAME=jobhunter-ai ./scripts/bootstrap_deploy.sh
+```
+
+See `docs/deployment.md` for provider details, public URL discovery, Render backend setup, and custom-domain notes.
+
 ## Smoke test
 
 After the backend is running, validate the live HTTP endpoints with:

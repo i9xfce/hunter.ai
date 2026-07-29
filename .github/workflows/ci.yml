@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master, work]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install backend
+        run: pip install -e .
+      - name: Test backend
+        run: pytest
+      - name: Build backend image
+        run: docker build -t jobhunter-ai-backend .
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install frontend
+        run: npm install
+      - name: Build static frontend
+        run: npm run build

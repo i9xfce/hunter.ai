@@ -1,0 +1,15 @@
+CREATE TABLE IF NOT EXISTS users (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), email TEXT UNIQUE NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS resumes (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), user_id UUID REFERENCES users(id), original_filename TEXT NOT NULL, content_text TEXT, created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS companies (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), name TEXT UNIQUE NOT NULL, website TEXT);
+CREATE TABLE IF NOT EXISTS jobs (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID REFERENCES companies(id), title TEXT NOT NULL, source_url TEXT UNIQUE NOT NULL, description TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS applications (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), user_id UUID REFERENCES users(id), job_id UUID REFERENCES jobs(id), status TEXT NOT NULL DEFAULT 'pending', submitted_at TIMESTAMPTZ);
+CREATE TABLE IF NOT EXISTS interviews (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), application_id UUID REFERENCES applications(id), scheduled_at TIMESTAMPTZ, notes TEXT);
+CREATE TABLE IF NOT EXISTS matches (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), resume_id UUID REFERENCES resumes(id), job_id UUID REFERENCES jobs(id), score INTEGER NOT NULL CHECK (score BETWEEN 0 AND 100), strengths JSONB NOT NULL DEFAULT '[]', gaps JSONB NOT NULL DEFAULT '[]');
+CREATE TABLE IF NOT EXISTS skills (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), user_id UUID REFERENCES users(id), name TEXT NOT NULL, category TEXT);
+CREATE TABLE IF NOT EXISTS certifications (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), user_id UUID REFERENCES users(id), name TEXT NOT NULL, issuer TEXT, issued_at DATE);
+CREATE TABLE IF NOT EXISTS experiences (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), user_id UUID REFERENCES users(id), company TEXT NOT NULL, role TEXT NOT NULL, started_at DATE, ended_at DATE, summary TEXT);
+CREATE TABLE IF NOT EXISTS notifications (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), user_id UUID REFERENCES users(id), channel TEXT NOT NULL, payload JSONB NOT NULL, read_at TIMESTAMPTZ);
+CREATE TABLE IF NOT EXISTS logs (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), level TEXT NOT NULL, message TEXT NOT NULL, context JSONB NOT NULL DEFAULT '{}', created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS ai_memory (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), user_id UUID REFERENCES users(id), key TEXT NOT NULL, value JSONB NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS prompts (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), name TEXT UNIQUE NOT NULL, template TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 1);
+CREATE TABLE IF NOT EXISTS analytics (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), metric TEXT NOT NULL, value NUMERIC NOT NULL, dimensions JSONB NOT NULL DEFAULT '{}', created_at TIMESTAMPTZ NOT NULL DEFAULT now());

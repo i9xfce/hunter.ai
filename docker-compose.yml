@@ -19,3 +19,13 @@ services:
   redis:
     image: redis:7-alpine
     ports: ["6379:6379"]
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes: ["./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro"]
+    ports: ["9090:9090"]
+  grafana:
+    image: grafana/grafana:latest
+    volumes: ["./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro"]
+    ports: ["3001:3000"]
+    depends_on: [prometheus]
