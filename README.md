@@ -1,0 +1,2 @@
+# hunter.ai
+Jobs-Search
