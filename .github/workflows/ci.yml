@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master, work]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install backend
+        run: pip install -e .
+      - name: Test backend
+        run: pytest
+      - name: Build backend image
+        run: docker build -t jobhunter-ai-backend .
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Restore Next.js and TypeScript caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            frontend/.next/cache
+            frontend/.tsbuildinfo
+          key: ${{ runner.os }}-frontend-${{ hashFiles('frontend/package-lock.json', 'frontend/tsconfig.json', 'frontend/**/*.ts', 'frontend/**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-frontend-
+      - name: Install frontend
+        run: npm ci
+      - name: Diagnose frontend toolchain
+        run: |
+          node -v
+          npm -v
+          npx tsc --version
+          npm list next
+          npm list react
+      - name: Lint frontend
+        run: npm run lint
+      - name: Type-check frontend
+        run: npm run type-check
+      - name: Build static frontend
+        run: npm run build
