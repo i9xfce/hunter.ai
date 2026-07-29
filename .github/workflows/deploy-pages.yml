@@ -26,7 +26,27 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm install
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Restore Next.js and TypeScript caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            frontend/.next/cache
+            frontend/.tsbuildinfo
+          key: ${{ runner.os }}-pages-${{ hashFiles('frontend/package-lock.json', 'frontend/tsconfig.json', 'frontend/**/*.ts', 'frontend/**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-pages-
+      - run: npm ci
+      - name: Diagnose frontend toolchain
+        run: |
+          node -v
+          npm -v
+          npx tsc --version
+          npm list next
+          npm list react
+      - run: npm run lint
+      - run: npm run type-check
       - run: npm run build
         env:
           GITHUB_PAGES: 'true'

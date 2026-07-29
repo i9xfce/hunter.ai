@@ -1,18 +1,30 @@
 {
+    "name": "jobhunter-ai-frontend",
+    "version": "0.1.0",
+    "private": true,
+    "engines": {
+        "node": ">=22.11.0 <23",
+        "npm": ">=10 <12"
+    },
     "scripts": {
         "dev": "next dev",
-        "build": "next build",
-        "lint": "next lint"
+        "lint": "eslint . --max-warnings=0",
+        "type-check": "tsc --noEmit",
+        "build": "next build"
     },
     "dependencies": {
-        "@types/node": "latest",
-        "@types/react": "latest",
-        "@types/react-dom": "latest",
-        "next": "latest",
-        "react": "latest",
-        "react-dom": "latest",
-        "tailwindcss": "latest",
-        "typescript": "latest"
+        "next": "15.4.7",
+        "react": "19.1.1",
+        "react-dom": "19.1.1"
     },
-    "devDependencies": {}
+    "devDependencies": {
+        "@eslint/eslintrc": "3.3.1",
+        "@types/node": "22.13.14",
+        "@types/react": "19.1.9",
+        "@types/react-dom": "19.1.7",
+        "eslint": "9.33.0",
+        "eslint-config-next": "15.4.7",
+        "tailwindcss": "3.4.17",
+        "typescript": "npm:@typescript/typescript6@6.0.2"
+    }
 }
