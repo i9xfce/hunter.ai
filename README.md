@@ -33,3 +33,11 @@ docker compose up --build
 
 Backend health check: <http://localhost:8000/health>
 Frontend dashboard: <http://localhost:3000>
+
+## Smoke test
+
+After the backend is running, validate the live HTTP endpoints with:
+
+```bash
+python3 scripts/online_smoke_test.py http://127.0.0.1:8000
+```

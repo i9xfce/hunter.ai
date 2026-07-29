@@ -14,6 +14,10 @@ class JobCreate(BaseModel):
     description: str
     skills: list[str] = Field(default_factory=list)
 
+class JobMatchRequest(BaseModel):
+    job: JobCreate
+    profile_skills: list[str] = Field(default_factory=list)
+
 class JobMatch(BaseModel):
     score: int = Field(ge=0, le=100)
     strengths: list[str]

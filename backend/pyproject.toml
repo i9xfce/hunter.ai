@@ -9,6 +9,7 @@ dependencies = [
   "pydantic>=2.7.0",
   "pydantic-settings>=2.3.0",
   "python-multipart>=0.0.9",
+  "pytest>=8.2.0",
 ]
 
 [tool.pytest.ini_options]
