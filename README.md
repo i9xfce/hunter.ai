@@ -1,2 +1,2 @@
-# hunter.ai
+# Jobshunter.ai
 Jobs-Search
