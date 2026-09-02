@@ -1,0 +1,6 @@
+{
+  "name":"aws-clf-c02-simulator","version":"1.0.0","private":true,"type":"module",
+  "scripts":{"dev":"concurrently \"vite\" \"tsx watch server/index.ts\"","dev:web":"vite","dev:server":"tsx watch server/index.ts","build":"tsc -b && vite build","start":"tsx server/index.ts","lint":"eslint ."},
+  "dependencies":{"@vitejs/plugin-react":"latest","better-sqlite3":"latest","cors":"latest","dotenv":"latest","express":"latest","express-rate-limit":"latest","helmet":"latest","react":"latest","react-dom":"latest","recharts":"latest","zod":"latest"},
+  "devDependencies":{"@types/better-sqlite3":"latest","@types/cors":"latest","@types/express":"latest","@types/node":"latest","@types/react":"latest","@types/react-dom":"latest","autoprefixer":"latest","concurrently":"latest","eslint":"latest","postcss":"latest","tailwindcss":"latest","tsx":"latest","typescript":"latest","vite":"latest"}
+}
