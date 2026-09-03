@@ -57,3 +57,21 @@ Entradas da API passam por schema Zod e são serializadas pelo React, evitando r
 O workflow [`../.github/workflows/deploy-aws-clf-c02.yml`](../.github/workflows/deploy-aws-clf-c02.yml) constrói e publica o **frontend estático** em GitHub Pages quando alterações deste diretório chegam a `main` ou `master`. Antes do primeiro deploy, habilite **Settings → Pages → Source: GitHub Actions** no repositório `denisribalves/awscf-02-certification`.
 
 O Express/SQLite é uma API Node separada e não é executado pelo GitHub Pages. Para usar persistência em produção, faça o deploy do conteúdo de `server/` em um host Node compatível e configure `CORS_ORIGIN` com a URL publicada do Pages.
+
+## Deploy rápido com AWS CloudFormation
+
+O template de infraestrutura está em [`infrastructure/cloudformation/static-site.yml`](./infrastructure/cloudformation/static-site.yml). Ele provisiona um bucket S3 **privado**, uma distribuição CloudFront com Origin Access Control, HTTPS obrigatório, compressão, cabeçalhos de segurança, versionamento e limpeza de versões antigas. O site não é publicado diretamente no S3.
+
+Com AWS CLI v2 autenticado e permissões para CloudFormation, S3 e CloudFront, execute a partir deste diretório:
+
+```bash
+./scripts/deploy-static-site.sh
+```
+
+Opcionalmente, defina `AWS_REGION` e `STACK_NAME`. O script gera `dist/`, cria/atualiza a stack, envia os ativos e invalida o cache CloudFront; por fim, imprime a URL HTTPS. Valide antes de provisionar com:
+
+```bash
+aws cloudformation validate-template --template-body file://infrastructure/cloudformation/static-site.yml
+```
+
+O deploy requer uma conta AWS autenticada e pode gerar custos de S3 e CloudFront.
