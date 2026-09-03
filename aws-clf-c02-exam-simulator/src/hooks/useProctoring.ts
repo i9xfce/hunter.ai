@@ -1,0 +1,9 @@
+import { useCallback, useEffect, useRef, useState } from 'react'; import type { Violation } from '../types';
+/** Browser-only deterrent; it cannot reliably prevent cheating or detect external devices. */
+export function useProctoring(enabled:boolean){
+ const [violations,setViolations]=useState<Violation[]>([]), [alert,setAlert]=useState<string|undefined>(); const audio=useRef<AudioContext>();
+ const sound=useCallback(()=>{ try { const ctx=audio.current??new AudioContext(); audio.current=ctx; const o=ctx.createOscillator(),g=ctx.createGain(); o.frequency.value=880; g.gain.value=.16; o.connect(g).connect(ctx.destination); o.start(); o.stop(ctx.currentTime+.55); } catch { /* Browser blocked audio until user interaction. */ } },[]);
+ const report=useCallback((type:string)=>{ if(!enabled)return; sound(); setViolations(v=>[...v,{type,at:new Date().toISOString()}]); setAlert(type); },[enabled,sound]);
+ useEffect(()=>{ if(!enabled)return; const visibility=()=>document.hidden&&report('Mudança de visibilidade/aba'); const blur=()=>report('Perda de foco da janela'); const fullscreen=()=>!document.fullscreenElement&&report('Saída da tela cheia'); const unload=(e:BeforeUnloadEvent)=>{e.preventDefault();e.returnValue='';report('Tentativa de sair da prova');}; document.addEventListener('visibilitychange',visibility); window.addEventListener('blur',blur); document.addEventListener('fullscreenchange',fullscreen); window.addEventListener('beforeunload',unload); return()=>{document.removeEventListener('visibilitychange',visibility);window.removeEventListener('blur',blur);document.removeEventListener('fullscreenchange',fullscreen);window.removeEventListener('beforeunload',unload)}},[enabled,report]);
+ return {violations,alert,continueExam:()=>setAlert(undefined),requestFullscreen:()=>document.documentElement.requestFullscreen?.().catch(()=>report('Tela cheia recusada'))};
+}

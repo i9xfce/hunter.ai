@@ -1,0 +1,8 @@
+node_modules
+dist
+.env
+*.db
+*.db-*
+
+# TypeScript incremental build metadata
+**/*.tsbuildinfo
